@@ -1,4 +1,4 @@
-package com.klyschenko.notes.ui.theme
+package com.klyschenko.notes.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

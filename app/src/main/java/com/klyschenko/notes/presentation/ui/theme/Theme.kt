@@ -1,6 +1,5 @@
-package com.klyschenko.notes.ui.theme
+package com.klyschenko.notes.presentation.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
