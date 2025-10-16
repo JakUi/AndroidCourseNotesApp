@@ -42,20 +42,33 @@ class NotesViewModel: ViewModel() {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
+        addSomeNotes()
+
         query
-            .flatMapLatest {
-                if (it.isBlank()) {
+            .onEach {input ->
+                _state.update { it.copy(query = input)}
+            }
+            .flatMapLatest { input ->
+                if (input.isBlank()) {
                     getAllNotesUseCase()
                 } else {
-                    searchNoteUseCase(it)
+                    searchNoteUseCase(input)
                 }
             }
-            .onEach {
-                val pinnedNotes = it.filter { it.isPinned }
-                val otherNotes = it.filter { !it.isPinned }
+            .onEach { notes ->
+                val pinnedNotes = notes.filter { it.isPinned }
+                val otherNotes = notes.filter { it.isPinned }
                 _state.update { it.copy(pinnedNotes = pinnedNotes, otherNotes = otherNotes) }
             }
             .launchIn(scope)
+    }
+
+
+    // TODO: Don't forget to remove it
+    private fun addSomeNotes() {
+        repeat(50) {
+            addNoteUseCase(title = "Title №$it", content = "Content №$it")
+        }
     }
 
     fun processCommand(command: NotesCommand) {
@@ -64,11 +77,12 @@ class NotesViewModel: ViewModel() {
                 deleteNoteUseCase(command.noteId)
             }
             is NotesCommand.EditNote -> {
+                val note = getNoteUseCase(command.note.id)
                 val title = command.note.title
-                editNoteUseCase(command.note.copy(title = "$title edited"))
+                editNoteUseCase(note.copy(title = "$title edited"))
             }
             is NotesCommand.InputSearchQuery -> {
-
+                query.update { command.query.trim() }
             }
             is NotesCommand.SwitchPinnedStatus -> {
                 switchPinnedStatusUseCase(command.noteId)
