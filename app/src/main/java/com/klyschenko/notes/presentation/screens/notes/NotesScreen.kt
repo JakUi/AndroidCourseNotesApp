@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +27,7 @@ fun NotesScreen(
     val state by viewModel.state.collectAsState()
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 48.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -36,7 +37,10 @@ fun NotesScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.pinnedNotes) { note ->
+                items(
+                    items = state.pinnedNotes,
+                    key = { it.id }
+                ) { note ->
                     NotesCard(
                         note = note,
                         onNoteClick = {
@@ -46,7 +50,26 @@ fun NotesScreen(
                 }
             }
         }
-        items(state.otherNotes) { note -> // items(state.otherNotes) аналог метода state.otherNotes.forEach
+
+        // вариант 1 (через item)
+//        state.otherNotes.forEach {note ->
+//            item(
+//                key = note.id,
+//            ) {
+//                NotesCard(
+//                    note = note,
+//                    onNoteClick = {
+//                        viewModel.processCommand(NotesCommand.SwitchPinnedStatus(it.id))
+//                    }
+//                )
+//            }
+//        }
+
+        // вариант 2 (через items)
+        items(
+            items = state.otherNotes,
+            key = { it.id }
+            ) { note ->
             NotesCard(
                 note = note,
                 onNoteClick = {
@@ -54,11 +77,6 @@ fun NotesScreen(
                 }
             )
         }
-//        state.otherNotes.forEach { note ->
-//            item {
-//
-//            }
-//        }
     }
 }
 
@@ -69,7 +87,7 @@ fun NotesCard(
     onNoteClick: (Note) -> Unit
 ) {
     Text(
-        modifier = Modifier
+        modifier = modifier
             .clickable {
                 onNoteClick(note)
             },
