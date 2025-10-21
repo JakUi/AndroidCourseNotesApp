@@ -1,6 +1,5 @@
 package com.klyschenko.notes.presentation.screens.notes
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,10 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.klyschenko.notes.domain.Note
-import com.klyschenko.notes.presentation.ui.theme.Green
 import com.klyschenko.notes.presentation.ui.theme.OtherNotesColors
 import com.klyschenko.notes.presentation.ui.theme.PinnedNotesColors
-import com.klyschenko.notes.presentation.ui.theme.Yellow200
 
 @Composable
 fun NotesScreen(
