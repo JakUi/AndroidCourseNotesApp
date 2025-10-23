@@ -1,5 +1,6 @@
 package com.klyschenko.notes.presentation.screens.notes
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -57,13 +58,12 @@ fun NotesScreen(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddNoteClick
-                ,
+                onClick = onAddNoteClick,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
 
-            ) {
+                ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_add_note),
                     contentDescription = "Button add note",
