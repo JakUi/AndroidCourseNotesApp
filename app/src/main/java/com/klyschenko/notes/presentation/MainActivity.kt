@@ -24,7 +24,9 @@ class MainActivity : ComponentActivity() {
 //                    }
 //                )
                 CreateNoteScreen(
-
+                    onFinished = {
+                        Log.d("CreateNoteScreen", "Finished")
+                    }
                 )
             }
         }
