@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.klyschenko.notes.presentation.screens.creation.CreateNoteScreen
+import com.klyschenko.notes.presentation.screens.editing.EditNoteScreen
 import com.klyschenko.notes.presentation.screens.notes.NotesScreen
 import com.klyschenko.notes.presentation.ui.theme.NotesTheme
 
@@ -15,6 +16,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NotesTheme {
+                EditNoteScreen(
+                    noteId = 5,
+                    onFinished = {
+                        Log.d("CreateNoteScreen", "Finished")
+                    }
+                )
 //                NotesScreen(
 //                    onNoteClick = {
 //                        Log.d("MainActivity", "onNoteClick: $it")
@@ -23,11 +30,11 @@ class MainActivity : ComponentActivity() {
 //                        Log.d("MainActivity", "onAddNoteClick")
 //                    }
 //                )
-                CreateNoteScreen(
-                    onFinished = {
-                        Log.d("CreateNoteScreen", "Finished")
-                    }
-                )
+//                CreateNoteScreen(
+//                    onFinished = {
+//                        Log.d("CreateNoteScreen", "Finished")
+//                    }
+//                )
             }
         }
     }
