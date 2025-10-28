@@ -1,13 +1,10 @@
 package com.klyschenko.notes.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.klyschenko.notes.presentation.screens.creation.CreateNoteScreen
-import com.klyschenko.notes.presentation.screens.editing.EditNoteScreen
-import com.klyschenko.notes.presentation.screens.notes.NotesScreen
+import com.klyschenko.notes.presentation.navigation.NavGraph
 import com.klyschenko.notes.presentation.ui.theme.NotesTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,25 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NotesTheme {
-                EditNoteScreen(
-                    noteId = 5,
-                    onFinished = {
-                        Log.d("CreateNoteScreen", "Finished")
-                    }
-                )
-//                NotesScreen(
-//                    onNoteClick = {
-//                        Log.d("MainActivity", "onNoteClick: $it")
-//                    },
-//                    onAddNoteClick = {
-//                        Log.d("MainActivity", "onAddNoteClick")
-//                    }
-//                )
-//                CreateNoteScreen(
-//                    onFinished = {
-//                        Log.d("CreateNoteScreen", "Finished")
-//                    }
-//                )
+                NavGraph()
             }
         }
     }
