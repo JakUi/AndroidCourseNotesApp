@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.update
 
 object TestNotesRepositoryImpl : NotesRepository {
 
-    private val testDate = mutableListOf<Note>().apply {
+    private val testData = mutableListOf<Note>().apply {
         repeat(10) {
             add(Note(it, "Title $it", "Content $it", System.currentTimeMillis(), false))
         }
     }
-    private val notesListFlow = MutableStateFlow<List<Note>>(testDate)
+    private val notesListFlow = MutableStateFlow<List<Note>>(testData)
 
     override suspend fun addNote(
         title: String,
