@@ -12,8 +12,11 @@ interface NotesDao {
     @Query("SELECT * FROM notes ORDER BY updatedAt DESC")
     fun getAllNotes(): Flow<List<NoteDBModel>>
 
+    @Query("SELECT * FROM notes WHERE id == :noteId")
+    suspend fun getNote(noteId: Int): NoteDBModel
+
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY updatedAt DESC") // || в SQL означает конкатенацию
-    fun searchNote(query: String): Flow<List<NoteDBModel>>
+    fun searchNotes(query: String): Flow<List<NoteDBModel>>
 
     @Query("DELETE FROM notes WHERE id == :noteId")
     suspend fun deleteNote(noteId: Int)

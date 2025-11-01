@@ -9,3 +9,7 @@ fun Note.toDBModel(): NoteDBModel {
 fun NoteDBModel.toEntity(): Note {
     return Note(id, title, content, updatedAt, isPinned)
 }
+
+fun List<NoteDBModel>.toEntities(): List<Note> {
+    return this.map{ it.toEntity() }
+}
