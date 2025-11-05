@@ -1,17 +1,18 @@
 package com.klyschenko.notes.presentation.screens.creation
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.klyschenko.notes.data.TestNotesRepositoryImpl
+import com.klyschenko.notes.data.NotesRepositoryImpl
 import com.klyschenko.notes.domain.AddNoteUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CreateNoteViewmodel : ViewModel() {
+class CreateNoteViewmodel(context: Context) : ViewModel() {
 
-    private val repository = TestNotesRepositoryImpl
+    private val repository = NotesRepositoryImpl.getInstance(context)
     private val addNoteUseCase = AddNoteUseCase(repository)
 
     private val _state = MutableStateFlow<CreateNoteState>(CreateNoteState.Creation())

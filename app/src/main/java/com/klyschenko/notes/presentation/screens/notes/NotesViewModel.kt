@@ -2,9 +2,10 @@
 
 package com.klyschenko.notes.presentation.screens.notes
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.klyschenko.notes.data.TestNotesRepositoryImpl
+import com.klyschenko.notes.data.NotesRepositoryImpl
 import com.klyschenko.notes.domain.GetAllNotesUseCase
 import com.klyschenko.notes.domain.Note
 import com.klyschenko.notes.domain.SearchNotesUseCase
@@ -18,9 +19,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NotesViewModel : ViewModel() {
+class NotesViewModel(context: Context) : ViewModel() {
 
-    private val repository = TestNotesRepositoryImpl
+    private val repository = NotesRepositoryImpl.getInstance(context)
     private val getAllNotesUseCase = GetAllNotesUseCase(repository)
     private val searchNoteUseCase = SearchNotesUseCase(repository)
     private val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
