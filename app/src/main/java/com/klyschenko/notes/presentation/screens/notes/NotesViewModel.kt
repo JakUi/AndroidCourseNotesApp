@@ -2,14 +2,13 @@
 
 package com.klyschenko.notes.presentation.screens.notes
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.klyschenko.notes.data.NotesRepositoryImpl
 import com.klyschenko.notes.domain.GetAllNotesUseCase
 import com.klyschenko.notes.domain.Note
 import com.klyschenko.notes.domain.SearchNotesUseCase
 import com.klyschenko.notes.domain.SwitchPinnedStatusUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,13 +17,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NotesViewModel(context: Context) : ViewModel() {
-
-    private val repository = NotesRepositoryImpl.getInstance(context)
-    private val getAllNotesUseCase = GetAllNotesUseCase(repository)
-    private val searchNoteUseCase = SearchNotesUseCase(repository)
-    private val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
+@HiltViewModel
+class NotesViewModel @Inject constructor(
+    private val getAllNotesUseCase: GetAllNotesUseCase,
+    private val searchNoteUseCase: SearchNotesUseCase,
+    private val switchPinnedStatusUseCase: SwitchPinnedStatusUseCase
+) : ViewModel() {
 
     private val query = MutableStateFlow("")
     private val _state = MutableStateFlow(NotesScreenState())
@@ -78,5 +78,4 @@ data class NotesScreenState(
     val query: String = "",
     val pinnedNotes: List<Note> = listOf(),
     val otherNotes: List<Note> = listOf()
-
 )

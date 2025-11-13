@@ -38,7 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.klyschenko.notes.R
 import com.klyschenko.notes.domain.Note
 import com.klyschenko.notes.presentation.ui.theme.OtherNotesColors
@@ -49,9 +49,10 @@ import com.klyschenko.notes.presentation.utils.DateFormatter
 fun NotesScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current.applicationContext,
-    viewModel: NotesViewModel = viewModel {
-        NotesViewModel(context)
-    },
+//    viewModel: NotesViewModel = viewModel {
+//        NotesViewModel(context)
+//    },
+    viewModel: NotesViewModel = hiltViewModel(),
     onNoteClick: (Note) -> Unit,
     onAddNoteClick: () -> Unit
 ) {

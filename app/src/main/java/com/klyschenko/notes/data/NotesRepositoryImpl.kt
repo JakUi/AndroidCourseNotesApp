@@ -3,11 +3,14 @@ package com.klyschenko.notes.data
 import android.content.Context
 import com.klyschenko.notes.domain.Note
 import com.klyschenko.notes.domain.NotesRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class NotesRepositoryImpl private constructor(context: Context): NotesRepository {
-
+class NotesRepositoryImpl @Inject constructor(
+    @ApplicationContext context: Context
+) : NotesRepository {
     private val notesDatabase = NotesDatabase.getInstance(context)
     private val notesDao = notesDatabase.notesDao()
 
@@ -30,7 +33,7 @@ class NotesRepositoryImpl private constructor(context: Context): NotesRepository
     }
 
     override fun getAllNotes(): Flow<List<Note>> {
-        return notesDao.getAllNotes().map { it.toEntities()}
+        return notesDao.getAllNotes().map { it.toEntities() }
     }
 
     override suspend fun getNote(noteId: Int): Note {
@@ -52,10 +55,10 @@ class NotesRepositoryImpl private constructor(context: Context): NotesRepository
 
         fun getInstance(context: Context): NotesRepositoryImpl {
 
-            instance?.let{ return it }
+            instance?.let { return it }
 
             synchronized(LOCK) {
-                instance?.let{ return it }
+                instance?.let { return it }
                 return NotesRepositoryImpl(context).also {
                     instance = it
                 }

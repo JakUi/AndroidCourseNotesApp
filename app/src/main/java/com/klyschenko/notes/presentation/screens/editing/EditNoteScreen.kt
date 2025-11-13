@@ -32,7 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.klyschenko.notes.presentation.screens.editing.EditNoteViewmodel.EditNoteCommand.*
 import com.klyschenko.notes.presentation.utils.DateFormatter
 
@@ -41,9 +41,14 @@ fun EditNoteScreen(
     modifier: Modifier = Modifier,
     noteId: Int,
     context: Context = LocalContext.current.applicationContext,
-    viewmodel: EditNoteViewmodel = viewModel {
-        EditNoteViewmodel(noteId, context)
-    },
+//    viewmodel: EditNoteViewmodel = viewModel {
+//        EditNoteViewmodel(noteId, context) // Тут через фабрику! Урок Hilt Navigation Compose
+//    },
+    viewmodel: EditNoteViewmodel = hiltViewModel(
+        creationCallback = { factory: EditNoteViewmodel.Factory ->
+            factory.create(noteId)
+        }
+    ),
     onFinished: () -> Unit
 ) {
 
@@ -192,7 +197,7 @@ fun EditNoteScreen(
             }
         }
 
-       EditNoteViewmodel.EditNoteState.Finished -> {
+        EditNoteViewmodel.EditNoteState.Finished -> {
             LaunchedEffect(
                 key1 = Unit
             ) {
