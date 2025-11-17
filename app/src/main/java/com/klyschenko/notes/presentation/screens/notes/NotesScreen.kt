@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.klyschenko.notes.R
+import com.klyschenko.notes.domain.ContentItem
 import com.klyschenko.notes.domain.Note
 import com.klyschenko.notes.presentation.ui.theme.OtherNotesColors
 import com.klyschenko.notes.presentation.ui.theme.PinnedNotesColors
@@ -281,13 +282,19 @@ fun NoteCard(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = note.content,
-            fontSize = 16.sp,
-            maxLines = 3,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Medium,
-            overflow = TextOverflow.Ellipsis
-        )
+
+        note.content
+            .filterIsInstance<ContentItem.Text>()
+            .joinToString("\n") { it.content }
+            .let {
+                Text(
+                    text = it,
+                    fontSize = 16.sp,
+                    maxLines = 3,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
     }
 }

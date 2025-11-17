@@ -1,6 +1,7 @@
 package com.klyschenko.notes.di
 
 import android.content.Context
+import androidx.room.Room
 import com.klyschenko.notes.data.NotesDao
 import com.klyschenko.notes.data.NotesDatabase
 import com.klyschenko.notes.data.NotesRepositoryImpl
@@ -23,7 +24,6 @@ interface DataModule {
         impl: NotesRepositoryImpl
     ): NotesRepository
 
-
     companion object {
 
         @Singleton
@@ -31,7 +31,11 @@ interface DataModule {
         fun provideDatabase(
             @ApplicationContext context: Context
         ): NotesDatabase {
-            return NotesDatabase.getInstance(context)
+             return Room.databaseBuilder(
+                context = context,
+                klass = NotesDatabase::class.java,
+                name = "notes.db"
+            ).fallbackToDestructiveMigration(dropAllTables = true).build()
         }
 
         @Singleton

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [NoteDBModel::class], // аналог записи arrayOf(NoteDBModel::class)
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class NotesDatabase: RoomDatabase() {
