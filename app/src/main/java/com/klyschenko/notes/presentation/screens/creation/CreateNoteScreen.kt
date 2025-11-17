@@ -2,7 +2,6 @@
 
 package com.klyschenko.notes.presentation.screens.creation
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

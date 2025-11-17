@@ -1,10 +1,15 @@
 package com.klyschenko.notes.di
 
+import android.content.Context
+import com.klyschenko.notes.data.NotesDao
+import com.klyschenko.notes.data.NotesDatabase
 import com.klyschenko.notes.data.NotesRepositoryImpl
 import com.klyschenko.notes.domain.NotesRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -17,4 +22,24 @@ interface DataModule {
     fun bindNotesRepository(
         impl: NotesRepositoryImpl
     ): NotesRepository
+
+
+    companion object {
+
+        @Singleton
+        @Provides
+        fun provideDatabase(
+            @ApplicationContext context: Context
+        ): NotesDatabase {
+            return NotesDatabase.getInstance(context)
+        }
+
+        @Singleton
+        @Provides
+        fun provideNotesDao(
+            database: NotesDatabase
+        ): NotesDao {
+            return database.notesDao()
+        }
+    }
 }

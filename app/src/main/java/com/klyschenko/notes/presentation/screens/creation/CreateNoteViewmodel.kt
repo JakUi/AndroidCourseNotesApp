@@ -1,13 +1,9 @@
 package com.klyschenko.notes.presentation.screens.creation
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.klyschenko.notes.data.NotesRepositoryImpl
 import com.klyschenko.notes.domain.AddNoteUseCase
-import com.klyschenko.notes.domain.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
