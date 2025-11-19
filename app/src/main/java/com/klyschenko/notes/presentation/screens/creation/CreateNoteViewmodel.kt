@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.klyschenko.notes.domain.AddNoteUseCase
 import com.klyschenko.notes.domain.ContentItem
+import com.klyschenko.notes.domain.ContentItem.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,15 +78,29 @@ class CreateNoteViewmodel @Inject constructor(
             }
 
             is CreateNoteCommand.AddImage -> {
-                _state.update {previousState ->
+                _state.update { previousState ->
                     if (previousState is CreateNoteState.Creation) {
                         previousState.content.toMutableList().apply {
                             val lastItem = last()
                             if (lastItem is ContentItem.Text && lastItem.content.isBlank()) {
                                 removeAt(lastIndex)
                             }
-                            add(ContentItem.Image(command.uri.toString()))
-                            add(ContentItem.Text(""))
+                            add(Image(command.uri.toString()))
+                            add(Text(""))
+                        }.let {
+                            previousState.copy(content = it)
+                        }
+                    } else {
+                        previousState
+                    }
+                }
+            }
+
+            is CreateNoteCommand.DeleteImage -> {
+                _state.update { previousState ->
+                    if (previousState is CreateNoteState.Creation) {
+                        previousState.content.toMutableList().apply {
+                            removeAt(command.index)
                         }.let {
                             previousState.copy(content = it)
                         }
@@ -105,6 +120,8 @@ class CreateNoteViewmodel @Inject constructor(
         data class InputContent(val content: String, val index: Int) : CreateNoteCommand
 
         data class AddImage(val uri: Uri) : CreateNoteCommand
+
+        data class DeleteImage(val index: Int) : CreateNoteCommand
 
         data object Save : CreateNoteCommand
 

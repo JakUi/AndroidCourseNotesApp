@@ -4,7 +4,6 @@ package com.klyschenko.notes.presentation.screens.creation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -152,11 +151,15 @@ fun CreateNoteScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Content(
-                        modifier = Modifier.weight(1f)
-                            .padding(horizontal = 24.dp),
+                        modifier = Modifier
+                            .weight(1f),
                         content = currentState.content,
                         onDeleteImageClick = {
-
+                            viewmodel.processCommand(
+                                CreateNoteViewmodel.CreateNoteCommand.DeleteImage(
+                                    it
+                                )
+                            )
                         },
                         onTextChanged = { index, text ->
                             viewmodel.processCommand(
@@ -225,9 +228,10 @@ private fun Content(
                             ?.map { (it as ContentItem.Image).url }
                             ?.let { urls ->
                                 ImageGroup(
+                                    modifier = Modifier.padding(horizontal = 24.dp),
                                     imageUrls = urls,
-                                    onDeleteImageClick = {
-
+                                    onDeleteImageClick = { imageIndex ->
+                                        onDeleteImageClick(index + imageIndex)
                                     }
                                 )
                             }
@@ -271,7 +275,7 @@ private fun ImageContent(
                 .padding(8.dp)
                 .size(24.dp)
                 .clickable {
-                    onDeleteImageClick
+                    onDeleteImageClick()
                 },
             imageVector = Icons.Default.Close,
             contentDescription = "Remove image",
