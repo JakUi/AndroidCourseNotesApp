@@ -267,7 +267,7 @@ private fun ImageContent(
                 .clip(RoundedCornerShape(8.dp)),
             model = imageUrl,
             contentDescription = "Image from gallery",
-            contentScale = ContentScale.FillWidth // дли автоматического масштабирования изображения.
+            contentScale = ContentScale.FillWidth // для автоматического масштабирования изображения
         )
         Icon(
             modifier = Modifier
