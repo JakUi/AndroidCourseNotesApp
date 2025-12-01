@@ -38,6 +38,7 @@ import com.klyschenko.notes.presentation.ui.theme.Content
 import com.klyschenko.notes.presentation.ui.theme.CustomIcons
 import com.klyschenko.notes.presentation.utils.DateFormatter
 
+
 @Composable
 fun EditNoteScreen(
     modifier: Modifier = Modifier,
@@ -102,6 +103,16 @@ fun EditNoteScreen(
                                 imageVector = Icons.Outlined.Delete,
                                 contentDescription = "Delete Note"
                             )
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = 24.dp)
+                                    .clickable {
+                                        imagePicker.launch("image/*") // сюда передаются MIME-типы (можно погуглить)
+                                    },
+                                imageVector = CustomIcons.AddPhoto,
+                                contentDescription = "Add photo from gallery",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         },
                         navigationIcon = {
                             Icon(
@@ -127,7 +138,7 @@ fun EditNoteScreen(
                         value = currentState.note.title,
                         onValueChange = {
                             viewmodel.processCommand(
-                                InputTitle(
+                                EditNoteViewmodel.EditNoteCommand.InputTitle(
                                     it
                                 )
                             )
@@ -215,36 +226,4 @@ fun EditNoteScreen(
 
         }
     }
-}
-
-@Composable
-private fun TextContent(
-    modifier: Modifier = Modifier,
-    text: String,
-    onTextChanged: (String) -> Unit
-) {
-    TextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        value = text,
-        onValueChange = onTextChanged,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-        ),
-        textStyle = TextStyle(
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurface
-        ),
-        placeholder = {
-            Text(
-                text = "Note something down",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-            )
-        }
-    )
 }

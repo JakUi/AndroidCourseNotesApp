@@ -1,6 +1,7 @@
 package com.klyschenko.notes.presentation.screens.creation
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.klyschenko.notes.domain.AddNoteUseCase
@@ -88,6 +89,7 @@ class CreateNoteViewmodel @Inject constructor(
                             add(Image(command.uri.toString()))
                             add(Text(""))
                         }.let {
+                            Log.d("Test","Create Note state: ${previousState.copy(content = it)}")
                             previousState.copy(content = it)
                         }
                     } else {
