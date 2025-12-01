@@ -33,7 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.klyschenko.notes.presentation.screens.editing.EditNoteViewmodel.EditNoteCommand.*
 import com.klyschenko.notes.presentation.ui.theme.Content
 import com.klyschenko.notes.presentation.ui.theme.CustomIcons
 import com.klyschenko.notes.presentation.utils.DateFormatter
@@ -88,20 +87,20 @@ fun EditNoteScreen(
                                 modifier = Modifier
                                     .padding(end = 16.dp)
                                     .clickable {
-                                        imagePicker.launch("image/*") // сюда передаются MIME-типы (можно погуглить)
+                                        viewmodel.processCommand(EditNoteViewmodel.EditNoteCommand.Delete)
                                     },
-                                imageVector = CustomIcons.AddPhoto,
-                                contentDescription = "Add photo from gallery",
-                                tint = MaterialTheme.colorScheme.onSurface
+                                imageVector = Icons.Outlined.Delete,
+                                contentDescription = "Delete Note"
                             )
                             Icon(
                                 modifier = Modifier
                                     .padding(end = 24.dp)
                                     .clickable {
-                                        viewmodel.processCommand(EditNoteViewmodel.EditNoteCommand.Delete)
+                                        imagePicker.launch("image/*") // сюда передаются MIME-типы (можно погуглить)
                                     },
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = "Delete Note"
+                                imageVector = CustomIcons.AddPhoto,
+                                contentDescription = "Add photo from gallery",
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                             Icon(
                                 modifier = Modifier
@@ -170,8 +169,16 @@ fun EditNoteScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Content(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f),
                         content = currentState.note.content,
+                        onDeleteImageClick = {
+                            viewmodel.processCommand(
+                                EditNoteViewmodel.EditNoteCommand.DeleteImage(
+                                    it
+                                )
+                            )
+                        },
                         onTextChanged = { index, text ->
                             viewmodel.processCommand(
                                 EditNoteViewmodel.EditNoteCommand.InputContent(
@@ -179,37 +186,30 @@ fun EditNoteScreen(
                                     index = index
                                 )
                             )
-                        },
-                        onDeleteImageClick = {
-                            viewmodel.processCommand(
-                                EditNoteViewmodel.EditNoteCommand.DeleteImage(
-                                    it
-                                )
-                            )
                         }
                     )
-                }
-                Button(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth(),
-                    onClick = {
-                        viewmodel.processCommand(EditNoteViewmodel.EditNoteCommand.Save)
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    enabled = currentState.isSaveEnabled,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(
-                            alpha = 0.1f
-                        ),
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        disabledContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    Text(
-                        text = "Save Note",
-                    )
+                    Button(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
+                        onClick = {
+                            viewmodel.processCommand(EditNoteViewmodel.EditNoteCommand.Save)
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        enabled = currentState.isSaveEnabled,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(
+                                alpha = 0.1f
+                            ),
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Text(
+                            text = "Save Note",
+                        )
+                    }
                 }
             }
         }

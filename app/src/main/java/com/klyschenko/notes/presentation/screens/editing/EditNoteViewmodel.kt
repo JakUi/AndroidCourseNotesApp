@@ -9,6 +9,7 @@ import com.klyschenko.notes.domain.DeleteNoteUseCase
 import com.klyschenko.notes.domain.EditNoteUseCase
 import com.klyschenko.notes.domain.GetNoteUseCase
 import com.klyschenko.notes.domain.Note
+import com.klyschenko.notes.presentation.ui.theme.Content
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -34,7 +35,12 @@ class EditNoteViewmodel @AssistedInject constructor(
         viewModelScope.launch {
             _state.update {
                 val note = getNoteUseCase(noteId)
-                EditNoteState.Editing(note)
+                val content = if (note.content.lastOrNull() !is ContentItem.Text) {
+                    note.content + ContentItem.Text("")
+                } else {
+                    note.content
+                }
+                EditNoteState.Editing(note.copy(content = content))
             }
         }
     }
