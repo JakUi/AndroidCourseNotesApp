@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.klyschenko.notes.presentation.ui.theme.Content
 import com.klyschenko.notes.presentation.ui.theme.CustomIcons
 import com.klyschenko.notes.presentation.utils.DateFormatter
 import com.klyschenko.notes.components.Content
@@ -57,6 +58,7 @@ fun CreateNoteScreen(
             }
         }
     )
+
     when (currentState) {
         is CreateNoteViewmodel.CreateNoteState.Creation -> {
             Scaffold(
