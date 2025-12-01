@@ -2,6 +2,8 @@
 
 package com.klyschenko.notes.presentation.screens.editing
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,9 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.klyschenko.notes.domain.ContentItem
-import com.klyschenko.notes.presentation.screens.editing.EditNoteViewmodel.EditNoteCommand.*
+import com.klyschenko.notes.components.Content
+import com.klyschenko.notes.presentation.ui.theme.CustomIcons
 import com.klyschenko.notes.presentation.utils.DateFormatter
+
 
 @Composable
 fun EditNoteScreen(
@@ -49,6 +52,16 @@ fun EditNoteScreen(
 
     val state = viewmodel.state.collectAsState()
     val currentState = state.value
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(), // contract для открытия галлереи
+        onResult = { uri ->
+            uri?.let {
+                viewmodel.processCommand(
+                    EditNoteViewmodel.EditNoteCommand.AddImage(uri)
+                )
+            }
+        }
+    )
 
     when (currentState) {
         is EditNoteViewmodel.EditNoteState.Editing -> {
@@ -79,6 +92,16 @@ fun EditNoteScreen(
                                 imageVector = Icons.Outlined.Delete,
                                 contentDescription = "Delete Note"
                             )
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = 24.dp)
+                                    .clickable {
+                                        imagePicker.launch("image/*") // сюда передаются MIME-типы (можно погуглить)
+                                    },
+                                imageVector = CustomIcons.AddPhoto,
+                                contentDescription = "Add photo from gallery",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         },
                         navigationIcon = {
                             Icon(
@@ -104,7 +127,7 @@ fun EditNoteScreen(
                         value = currentState.note.title,
                         onValueChange = {
                             viewmodel.processCommand(
-                                InputTitle(
+                                EditNoteViewmodel.EditNoteCommand.InputTitle(
                                     it
                                 )
                             )
@@ -135,20 +158,26 @@ fun EditNoteScreen(
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    currentState.note.content.filterIsInstance<ContentItem.Text>()
-                        .forEach { contentItem ->
-                            TextContent(
-                                modifier = Modifier.weight(1f),
-                                text = contentItem.content,
-                                onTextChanged = {
-                                    viewmodel.processCommand(
-                                        EditNoteViewmodel.EditNoteCommand.InputContent(
-                                            it
-                                        )
-                                    )
-                                }
+                    Content(
+                        modifier = Modifier
+                            .weight(1f),
+                        content = currentState.note.content,
+                        onDeleteImageClick = {
+                            viewmodel.processCommand(
+                                EditNoteViewmodel.EditNoteCommand.DeleteImage(
+                                    it
+                                )
+                            )
+                        },
+                        onTextChanged = { index, text ->
+                            viewmodel.processCommand(
+                                EditNoteViewmodel.EditNoteCommand.InputContent(
+                                    content = text,
+                                    index = index
+                                )
                             )
                         }
+                    )
                     Button(
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
@@ -187,36 +216,4 @@ fun EditNoteScreen(
 
         }
     }
-}
-
-@Composable
-private fun TextContent(
-    modifier: Modifier = Modifier,
-    text: String,
-    onTextChanged: (String) -> Unit
-) {
-    TextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        value = text,
-        onValueChange = onTextChanged,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-        ),
-        textStyle = TextStyle(
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurface
-        ),
-        placeholder = {
-            Text(
-                text = "Note something down",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-            )
-        }
-    )
 }
