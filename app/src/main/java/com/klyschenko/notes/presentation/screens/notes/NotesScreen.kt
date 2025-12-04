@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -28,15 +29,18 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import com.klyschenko.notes.R
 import com.klyschenko.notes.domain.ContentItem
 import com.klyschenko.notes.domain.Note
@@ -159,17 +163,45 @@ fun NotesScreen(
                 items = state.otherNotes,
                 key = { _, note -> note.id }
             ) { index, note ->
-                NoteCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    note = note,
-                    onNoteClick = onNoteClick,
-                    onLongClick = {
-                        viewModel.processCommand(NotesCommand.SwitchPinnedStatus(it.id))
-                    },
-                    backgroundColor = OtherNotesColors[index % OtherNotesColors.size]
-                )
+                if (note.content.any { it is ContentItem.Text } && note.content.any { it is ContentItem.Image }) {
+                    NoteContainsImageAndText(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        note = note,
+                        onNoteClick = onNoteClick,
+                        onLongClick = {
+                            viewModel.processCommand(NotesCommand.SwitchPinnedStatus(it.id))
+                        },
+                        backgroundColor = OtherNotesColors[index % OtherNotesColors.size],
+                        imageUrl = note.content.filterIsInstance<ContentItem.Image>().first().url
+                    )
+                } else if (note.content.any { it is ContentItem.Text }) {
+                    NoteCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        note = note,
+                        onNoteClick = onNoteClick,
+                        onLongClick = {
+                            viewModel.processCommand(NotesCommand.SwitchPinnedStatus(it.id))
+                        },
+                        backgroundColor = OtherNotesColors[index % OtherNotesColors.size]
+                    )
+                } else {
+                    NoteWithImageOnly(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        note = note,
+                        onNoteClick = onNoteClick,
+                        onLongClick = {
+                            viewModel.processCommand(NotesCommand.SwitchPinnedStatus(it.id))
+                        },
+                        backgroundColor = OtherNotesColors[index % OtherNotesColors.size],
+                        imageUrl = note.content.filterIsInstance<ContentItem.Image>().first().url
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -296,5 +328,141 @@ fun NoteCard(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+    }
+}
+
+@Composable
+fun NoteWithImageOnly(
+    modifier: Modifier = Modifier,
+    note: Note,
+    imageUrl: String,
+    backgroundColor: Color,
+    onNoteClick: (Note) -> Unit,
+    onLongClick: (Note) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor)
+            .combinedClickable(
+                onClick = {
+                    onNoteClick(note)
+                },
+                onLongClick = {
+                    onLongClick(note)
+                }
+            ),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp)),
+            model = imageUrl,
+            contentDescription = "First image in note",
+            contentScale = ContentScale.FillWidth
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = note.title,
+                fontSize = 14.sp,
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onPrimary,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = DateFormatter.formatDateToString(note.updatedAt),
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun NoteContainsImageAndText(
+    modifier: Modifier = Modifier,
+    note: Note,
+    imageUrl: String,
+    backgroundColor: Color,
+    onNoteClick: (Note) -> Unit,
+    onLongClick: (Note) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor)
+            .combinedClickable(
+                onClick = {
+                    onNoteClick(note)
+                },
+                onLongClick = {
+                    onLongClick(note)
+                }
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(backgroundColor)
+                .combinedClickable(
+                    onClick = {
+                        onNoteClick(note)
+                    },
+                    onLongClick = {
+                        onLongClick(note)
+                    }
+                ),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp)),
+                model = imageUrl,
+                contentDescription = "First image in note",
+                contentScale = ContentScale.FillHeight
+            )
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = note.title,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = DateFormatter.formatDateToString(note.updatedAt),
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+        Box(
+            modifier = Modifier.padding(all = 16.dp)
+        ) {
+            note.content
+                .filterIsInstance<ContentItem.Text>()
+                .joinToString("\n") { it.content }
+                .let {
+                    Text(
+                        text = it,
+                        fontSize = 16.sp,
+                        maxLines = 3,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Medium,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+        }
     }
 }
