@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.klyschenko.notes.domain.ContentItem
-import com.klyschenko.notes.domain.ContentItem.*
 import com.klyschenko.notes.domain.DeleteNoteUseCase
 import com.klyschenko.notes.domain.EditNoteUseCase
 import com.klyschenko.notes.domain.GetNoteUseCase
@@ -25,7 +24,6 @@ class EditNoteViewmodel @AssistedInject constructor(
     private val getNoteUseCase: GetNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
-
 
     private val _state = MutableStateFlow<EditNoteState>(EditNoteState.Initial)
     val state = _state.asStateFlow()
@@ -53,7 +51,8 @@ class EditNoteViewmodel @AssistedInject constructor(
             is EditNoteCommand.InputContent -> {
                 _state.update { previousState ->
                     if (previousState is EditNoteState.Editing) {
-                        val newContent = previousState.note.content
+                        val newContent = previousState.note
+                            .content
                             .mapIndexed { index, contentItem ->
                                 if (index == command.index && contentItem is ContentItem.Text) {
                                     contentItem.copy(content = command.content)
@@ -120,8 +119,8 @@ class EditNoteViewmodel @AssistedInject constructor(
                             if (lastItem is ContentItem.Text && lastItem.content.isBlank()) {
                                 removeAt(lastIndex)
                             }
-                            add(Image(command.uri.toString()))
-                            add(Text(""))
+                            add(ContentItem.Image(command.uri.toString()))
+                            add(ContentItem.Text(""))
                         }.let {
                             val newNote = oldNote.copy(content = it)
                             previousState.copy(note = newNote)
@@ -131,6 +130,7 @@ class EditNoteViewmodel @AssistedInject constructor(
                     }
                 }
             }
+
             is EditNoteCommand.DeleteImage -> {
                 _state.update { previousState ->
                     if (previousState is EditNoteState.Editing) {
