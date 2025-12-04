@@ -102,6 +102,16 @@ fun EditNoteScreen(
                                 contentDescription = "Add photo from gallery",
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = 24.dp)
+                                    .clickable {
+                                        imagePicker.launch("image/*") // сюда передаются MIME-типы (можно погуглить)
+                                    },
+                                imageVector = CustomIcons.AddPhoto,
+                                contentDescription = "Add photo from gallery",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         },
                         navigationIcon = {
                             Icon(
