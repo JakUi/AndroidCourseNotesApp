@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.klyschenko.notes.components.Content
+import com.klyschenko.notes.presentation.ui.theme.Content
 import com.klyschenko.notes.presentation.ui.theme.CustomIcons
 import com.klyschenko.notes.presentation.utils.DateFormatter
 

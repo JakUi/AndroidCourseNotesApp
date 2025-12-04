@@ -29,14 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.klyschenko.notes.presentation.ui.theme.Content
 import com.klyschenko.notes.presentation.ui.theme.CustomIcons
 import com.klyschenko.notes.presentation.utils.DateFormatter
-import com.klyschenko.notes.components.Content
-
 
 @Composable
 fun CreateNoteScreen(
@@ -57,6 +55,7 @@ fun CreateNoteScreen(
             }
         }
     )
+
     when (currentState) {
         is CreateNoteViewmodel.CreateNoteState.Creation -> {
             Scaffold(
