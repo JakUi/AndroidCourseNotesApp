@@ -21,7 +21,7 @@ interface NotesDao {
         WHERE title LIKE '%' || :query || '%'
         OR content LIKE '%' || :query || '%'
         ORDER BY updatedAt DESC""") // || в SQL означает конкатенацию
-    fun searchNotes(query: String): Flow<List<NoteDBModel>>
+    fun searchNotes(query: String): Flow<List<NoteWithContentDBModel>>
 
     @Query("DELETE FROM notes WHERE id == :noteId")
     suspend fun deleteNote(noteId: Int)
@@ -30,7 +30,7 @@ interface NotesDao {
     suspend fun switchedPinnedStatus(noteId: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNote(noteDBModel: NoteDBModel)
+    suspend fun addNote(noteDBModel: NoteDBModel): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNoteContent(content: List<ContentItemDbModel>)
