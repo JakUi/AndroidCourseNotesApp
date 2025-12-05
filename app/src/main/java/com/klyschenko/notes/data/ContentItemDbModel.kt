@@ -1,13 +1,30 @@
 package com.klyschenko.notes.data
 
-import kotlinx.serialization.Serializable
+import androidx.room.Entity
+import androidx.room.ForeignKey
 
-@Serializable
-sealed interface ContentItemDbModel {
+@Entity(
+    tableName = "content",
+    primaryKeys = ["noteId", "order"],
+    foreignKeys = [
+        ForeignKey(
+            entity = NoteDBModel::class, // в какой таблице смотреть
+            parentColumns = ["id"], // по какому ключу смотреть
+            childColumns = ["noteId"], // по какому из свойств определять к какой заметке относится этот элемент
+            onDelete = ForeignKey.CASCADE // стратегия поведения после удаления заметки CASCADE - удалить все элементы
+        )
+    ]
+)
+data class ContentItemDbModel(
+    val noteId: Int,
+    val contentType: ContentType,
+    val content: String,
+    val order: Int
+) {
 
-    @Serializable
-    data class Text(val content: String) : ContentItemDbModel
+}
 
-    @Serializable
-    data class Image(val url: String) : ContentItemDbModel
+enum class ContentType{
+
+    TEXT, IMAGE
 }
